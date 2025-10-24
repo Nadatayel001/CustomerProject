@@ -43,6 +43,7 @@ namespace CustomerApplication.Controllers
             [FromRoute] int categoryCode,
             [FromQuery] Guid? parentId,
             [FromQuery] string? q,
+            [FromQuery] Guid? id,
             [FromQuery] bool? isActive,
             [FromQuery] int skip = 0,
             [FromQuery] int take = 50,
@@ -50,6 +51,7 @@ namespace CustomerApplication.Controllers
         {
             var result = await _service.SearchAsync(new LookupSearchRequest
             {
+                Id=id,
                 CategoryCode = categoryCode,
                 ParentId = parentId,
                 Q = q,

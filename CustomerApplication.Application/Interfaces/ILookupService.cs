@@ -19,20 +19,26 @@ public sealed class LookupService : ILookupService
         var take = Math.Clamp(r.Take, 1, 200);
         var skip = Math.Max(0, r.Skip);
 
-        var query = _ctx.Lookups
-                        .AsNoTracking()
-                        .Where(x => x.CategoryCode == r.CategoryCode);
+        var query = _ctx.Lookups.AsNoTracking().Where(x => x.CategoryCode == r.CategoryCode);
+
+        if (r.Id.HasValue)
+        {
+            query = query.Where(x => x.Id == r.Id.Value);
+        }
 
         if (r.ParentId.HasValue)
+        {
             query = query.Where(x => x.ParentId == r.ParentId.Value);
+        }
 
         if (r.IsActive.HasValue)
+        {
             query = query.Where(x => x.IsActive == r.IsActive.Value);
+        }
 
         if (!string.IsNullOrWhiteSpace(r.Q))
         {
             var term = $"%{r.Q.Trim()}%";
-            // Case-insensitive LIKE on Name/Code
             query = query.Where(x =>
                 (x.Name != null && EF.Functions.Like(x.Name, term)) ||
                 (x.Code != null && EF.Functions.Like(x.Code, term)));
@@ -47,7 +53,7 @@ public sealed class LookupService : ILookupService
             .Select(x => new LookupDto
             {
                 Id = x.Id,
-                CategoryCode = x.CategoryCode, // int
+                CategoryCode = x.CategoryCode,
                 ParentId = x.ParentId,
                 Code = x.Code,
                 Name = x.Name
@@ -60,4 +66,5 @@ public sealed class LookupService : ILookupService
             Items = items
         };
     }
+
 }
