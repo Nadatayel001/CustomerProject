@@ -12,6 +12,7 @@ namespace CustomerApplication.CustomerApplication.Application.Interfaces
         Task<Customer> GetByIdAsync(Guid id);
         Task<Guid> CreateOrUpdateAsync(Command dto);
         Task<bool> DeleteAsync(Guid id);
+        Task<byte[]> ExportCustomersToPdfAsync(string? search = null);
 
         Task<PagedResult<Customer>> GetPagedAsync(
             int skip = 0,

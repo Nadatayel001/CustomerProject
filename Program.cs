@@ -8,6 +8,7 @@ using CustomerApplication.Data.Configurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using QuestPDF.Infrastructure;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,6 +37,7 @@ builder.Services.AddScoped<ILookupService, LookupService>();
 builder.Services.AddSingleton(resolver => resolver.GetRequiredService<IOptions<JwtOptions>>().Value);
 
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
+QuestPDF.Settings.License = LicenseType.Community;
 
 // 🔹 Identity helpers
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();

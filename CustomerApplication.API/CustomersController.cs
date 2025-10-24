@@ -80,5 +80,25 @@ namespace CustomerApplication.API.Controllers
                 return BadRequest(new { Message = ex.Message });
             }
         }
+
+        [HttpGet("export")]
+        public async Task<IActionResult> ExportToPdf()
+        {
+            try
+            {
+                var pdfBytes = await _customerService.ExportCustomersToPdfAsync();
+
+                return File(
+                    pdfBytes,
+                    "application/pdf",
+                    $"Customers_{DateTime.UtcNow:yyyyMMdd_HHmmss}.pdf"
+                );
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
     }
 }

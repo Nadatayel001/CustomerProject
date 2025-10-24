@@ -5,8 +5,12 @@ using CustomerApplication.CustomerApplication.Domain.Repositories;
 using CustomerApplication.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using Command = CustomerApplication.CustomerApplication.Application.DTOs.Customer.Commands.CreateOrUpdate.Command;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using Document = QuestPDF.Fluent.Document;
 
 namespace CustomerApplication.CustomerApplication.Application.Services
 {
@@ -182,12 +186,85 @@ namespace CustomerApplication.CustomerApplication.Application.Services
                 Items = items
             };
         }
+public async Task<byte[]> ExportCustomersToPdfAsync(string? search = null)
+    {
+        var query = _context.Customers
+            .Include(c => c.Gender)
+            .Where(c => !c.IsDeleted && c.IsActive);
 
-        #endregion
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            search = search.Trim().ToLower();
+            query = query.Where(c =>
+                (c.FullName != null && c.FullName.ToLower().Contains(search)) ||
+                (c.NationalID != null && c.NationalID.ToLower().Contains(search)));
+        }
 
-        #region Helpers
+        var customers = await query
+            .OrderBy(c => c.FullName)
+            .Take(1000)
+            .ToListAsync();
 
-        private int CalculateAge(DateTime birthDate)
+        var pdfBytes = Document.Create(container =>
+        {
+            container.Page(page =>
+            {
+                page.Size(PageSizes.A4);
+                page.Margin(20);
+                page.DefaultTextStyle(x => x.FontSize(12));
+
+                page.Header().Text("Customer Listing").Bold().FontSize(18).AlignCenter();
+
+                page.Content().Table(table =>
+                {
+                    table.ColumnsDefinition(columns =>
+                    {
+                        columns.ConstantColumn(30); 
+                        columns.RelativeColumn(3);  
+                        columns.RelativeColumn(2);  
+                        columns.RelativeColumn(2); 
+                        columns.RelativeColumn(2);  
+                    });
+
+                    table.Header(header =>
+                    {
+                        header.Cell().Text("#").Bold();
+                        header.Cell().Text("Full Name").Bold();
+                        header.Cell().Text("National ID").Bold();
+                        header.Cell().Text("Gender").Bold();
+                        header.Cell().Text("Salary").Bold();
+                    });
+
+                    int index = 1;
+                    foreach (var c in customers)
+                    {
+                        table.Cell().Text(index++);
+                        table.Cell().Text(c.FullName ?? "");
+                        table.Cell().Text(c.NationalID ?? "");
+                        table.Cell().Text(c.Gender?.Name ?? ""); 
+                        table.Cell().Text(c.Salary?.ToString("C") ?? "0");
+                    }
+                });
+
+                page.Footer().AlignCenter().Text(x =>
+                {
+                    x.CurrentPageNumber();
+                    x.Span(" / ");
+                    x.TotalPages();
+                });
+            });
+        }).GeneratePdf();
+
+        return pdfBytes;
+    }
+
+
+
+    #endregion
+
+    #region Helpers
+
+    private int CalculateAge(DateTime birthDate)
         {
             var today = DateTime.UtcNow;
             var age = today.Year - birthDate.Year;
