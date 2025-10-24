@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using static CustomerApplication.CustomerApplication.Domain.Enums.LookupEnums;
 
 namespace CustomerApplication.Controllers
 {
@@ -15,7 +16,7 @@ namespace CustomerApplication.Controllers
 
         [HttpGet("search")]
         public async Task<ActionResult<PagedResult<LookupDto>>> Search(
-            [FromQuery] int categoryCode,
+            [FromQuery] CategoryCode categoryCode,   // use enum
             [FromQuery] Guid? parentId,
             [FromQuery] string? q,
             [FromQuery] bool? isActive,
@@ -30,17 +31,16 @@ namespace CustomerApplication.Controllers
                 Q = q,
                 IsActive = isActive,
                 Skip = skip,
-                Take = Math.Clamp(take, 1, 200) 
+                Take = Math.Clamp(take, 1, 200)
             };
 
             var result = await _service.SearchAsync(request, ct);
             return Ok(result);
         }
 
-        
         [HttpGet("{categoryCode}")]
         public async Task<ActionResult<PagedResult<LookupDto>>> ByCategory(
-            [FromRoute] int categoryCode,
+            [FromRoute] CategoryCode categoryCode, // use enum
             [FromQuery] Guid? parentId,
             [FromQuery] string? q,
             [FromQuery] bool? isActive,

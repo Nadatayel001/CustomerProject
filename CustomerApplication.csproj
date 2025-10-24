@@ -24,7 +24,6 @@
 
   <ItemGroup>
     <Folder Include="CustomerApplication.Application\DTOs\Customer\Queries\" />
-    <Folder Include="CustomerApplication.Domain\Enums\" />
   </ItemGroup>
 
 </Project>

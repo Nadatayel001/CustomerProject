@@ -1,5 +1,4 @@
-﻿
-using CustomerApplication.CustomerApplication.Application.DTOs.Customer.Commands.CreateOrUpdate;
+﻿using CustomerApplication.CustomerApplication.Application.DTOs.Customer.Commands.CreateOrUpdate;
 using CustomerApplication.CustomerApplication.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,14 +30,11 @@ namespace CustomerApplication.API.Controllers
             try
             {
                 var customer = await _customerService.GetByIdAsync(id);
-                if (customer == null)
-                    return NotFound(new { Message = "Customer not found" });
-
                 return Ok(customer);
             }
             catch (Exception ex)
             {
-                return BadRequest(new { Message = ex.Message });
+                return NotFound(new { Message = ex.Message });
             }
         }
 
