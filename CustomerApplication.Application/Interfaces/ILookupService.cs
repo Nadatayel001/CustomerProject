@@ -1,6 +1,5 @@
 ﻿using CustomerApplication.Data;
 using Microsoft.EntityFrameworkCore;
-using static CustomerApplication.CustomerApplication.Domain.Enums.LookupEnums;
 
 public interface ILookupService
 {
@@ -14,13 +13,12 @@ public sealed class LookupService : ILookupService
 
     public async Task<PagedResult<LookupDto>> SearchAsync(LookupSearchRequest r, CancellationToken ct = default)
     {
-        if (!Enum.IsDefined(typeof(CategoryCode), r.CategoryCode))
-            throw new ArgumentException("Invalid CategoryCode.", nameof(r.CategoryCode));
+        if (r.CategoryCode <= 0)
+            throw new ArgumentException("CategoryCode must be a positive integer.", nameof(r.CategoryCode));
 
         var take = Math.Clamp(r.Take, 1, 200);
         var skip = Math.Max(0, r.Skip);
 
-        // Filter lookups by CategoryCode
         var query = _ctx.Lookups
                         .AsNoTracking()
                         .Where(x => x.CategoryCode == r.CategoryCode);
@@ -34,6 +32,7 @@ public sealed class LookupService : ILookupService
         if (!string.IsNullOrWhiteSpace(r.Q))
         {
             var term = $"%{r.Q.Trim()}%";
+            // Case-insensitive LIKE on Name/Code
             query = query.Where(x =>
                 (x.Name != null && EF.Functions.Like(x.Name, term)) ||
                 (x.Code != null && EF.Functions.Like(x.Code, term)));
@@ -48,7 +47,7 @@ public sealed class LookupService : ILookupService
             .Select(x => new LookupDto
             {
                 Id = x.Id,
-                CategoryCode = (CategoryCode)x.CategoryCode, // cast int to enum
+                CategoryCode = x.CategoryCode, // int
                 ParentId = x.ParentId,
                 Code = x.Code,
                 Name = x.Name

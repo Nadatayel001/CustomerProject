@@ -1,12 +1,11 @@
 ﻿using CustomerApplication.CustomerApplication.Domain.Entities;
 using CustomerApplication.Data;
 using Microsoft.EntityFrameworkCore;
-using static CustomerApplication.CustomerApplication.Domain.Enums.LookupEnums;
 
 public interface ILookupRepository
 {
     Task<PagedResult<Lookup>> SearchAsync(
-        CategoryCode categoryCode,
+        int categoryCode,
         Guid? parentId,
         string? q,
         bool? isActive,
@@ -21,7 +20,7 @@ public sealed class LookupRepository : ILookupRepository
     public LookupRepository(AppDbContext ctx) => _ctx = ctx;
 
     public async Task<PagedResult<Lookup>> SearchAsync(
-        CategoryCode categoryCode, Guid? parentId, string? q, bool? isActive, int skip, int take, CancellationToken ct = default)
+        int categoryCode, Guid? parentId, string? q, bool? isActive, int skip, int take, CancellationToken ct = default)
     {
         var query = _ctx.Lookups.AsQueryable();
 

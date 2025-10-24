@@ -1,10 +1,8 @@
-﻿using static CustomerApplication.CustomerApplication.Domain.Enums.LookupEnums;
-
-public sealed class LookupDto
+﻿public sealed class LookupDto
 {
     public Guid Id { get; set; }
 
-    public CategoryCode CategoryCode { get; set; }
+    public int CategoryCode { get; set; }
 
     public Guid? ParentId { get; set; }
     public string? Code { get; set; }
@@ -13,7 +11,7 @@ public sealed class LookupDto
 
 public sealed class LookupSearchRequest
 {
-    public CategoryCode CategoryCode { get; set; }  
+    public int CategoryCode { get; set; }
 
     public Guid? ParentId { get; set; }
     public string? Q { get; set; }
