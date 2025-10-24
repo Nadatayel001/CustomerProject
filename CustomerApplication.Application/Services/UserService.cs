@@ -70,7 +70,7 @@ public class UserService : IUserService
         }
         else
         {
-            var defaultRoleName = _configuration["DefaultRole:Name"];
+            var defaultRoleName = "USER";
             assignedRole = await _roleRepository.GetByNameAsync(defaultRoleName)
                             ?? throw new Exception($"Default role '{defaultRoleName}' not found in database.");
         }

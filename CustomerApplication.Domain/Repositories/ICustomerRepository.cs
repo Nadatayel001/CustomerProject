@@ -8,6 +8,8 @@ namespace CustomerApplication.CustomerApplication.Application.Interfaces
         Task<Customer?> GetByIdAsync(Guid id);
         Task AddAsync(Customer customer);
         Task UpdateAsync(Customer customer);
-        Task DeleteAsync(Guid id); 
+        Task DeleteAsync(Guid id);
+        IQueryable<Customer> GetQueryable();
+
     }
 }

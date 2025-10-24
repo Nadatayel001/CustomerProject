@@ -41,7 +41,10 @@ namespace CustomerApplication.CustomerApplication.Infrastructure.Persistence.Rep
                 throw new Exception($"Save failed (Customer): {inner}", ex);
             }
         }
-
+        public IQueryable<Customer> GetQueryable()
+        {
+            return _context.Customers.AsNoTracking();
+        }
 
         public async Task UpdateAsync(Customer customer)
         {

@@ -16,11 +16,13 @@ namespace CustomerApplication.API.Controllers
             _customerService = customerService;
         }
 
-        // 🔹 GET: api/customer
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll(
+     [FromQuery] int skip = 0,
+     [FromQuery] int take = 20,
+     [FromQuery] string? search = null)
         {
-            var customers = await _customerService.GetAllAsync();
+            var customers = await _customerService.GetPagedAsync(skip, take, search);
             return Ok(customers);
         }
 
