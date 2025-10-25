@@ -1,4 +1,5 @@
 ﻿using CustomerApplication.CustomerApplication.Domain.Entities;
+using System.Linq.Expressions;
 
 namespace CustomerApplication.CustomerApplication.Application.Interfaces
 {
@@ -10,6 +11,8 @@ namespace CustomerApplication.CustomerApplication.Application.Interfaces
         Task UpdateAsync(Customer customer);
         Task DeleteAsync(Guid id);
         IQueryable<Customer> GetQueryable();
+        Task<bool> ExistsAsync(Expression<Func<Customer, bool>> predicate);
+
 
     }
 }

@@ -2,6 +2,7 @@
 using CustomerApplication.CustomerApplication.Domain.Entities;
 using CustomerApplication.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace CustomerApplication.CustomerApplication.Infrastructure.Persistence.Repositories
 {
@@ -52,7 +53,12 @@ namespace CustomerApplication.CustomerApplication.Infrastructure.Persistence.Rep
             await _context.SaveChangesAsync();
 
         }
-
+        public async Task<bool> ExistsAsync(Expression<Func<Customer, bool>> predicate)
+        {
+            return await _context.Customers
+                .AsNoTracking()      
+                .AnyAsync(predicate);
+        }
         public async Task DeleteAsync(Guid id)
         {
             var customer = await _context.Customers.FindAsync(id);

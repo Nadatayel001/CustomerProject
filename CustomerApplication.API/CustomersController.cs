@@ -53,16 +53,20 @@ namespace CustomerApplication.API.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-
             try
             {
                 var id = await _customerService.CreateOrUpdateAsync(dto);
-                return Ok(new { Id = id });
+                return Ok(new { id });
             }
-            catch (Exception ex)
+            catch (ApplicationException ex) 
             {
-                return BadRequest(new { Message = ex.Message });
+                return BadRequest(new { message = ex.Message }); 
             }
+            catch (Exception)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred." });
+            }
+
         }
 
         // 🔹 DELETE: api/customer/{id}

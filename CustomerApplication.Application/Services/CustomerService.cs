@@ -57,6 +57,16 @@ namespace CustomerApplication.CustomerApplication.Application.Services
 
         public async Task<Guid> CreateOrUpdateAsync(Command dto)
         {
+            if(await _repository.ExistsAsync(c => c.FullName == dto.FullName && (!dto.Id.HasValue || c.Id != dto.Id.Value)))
+              {
+                throw new ApplicationException("Full Name already exists.");
+            }
+
+            if (await _repository.ExistsAsync(c => c.NationalID == dto.NationalID && (!dto.Id.HasValue || c.Id != dto.Id.Value)))
+            {
+                throw new ApplicationException("National ID already exists.");
+            }
+
             if (dto.Id.HasValue)
             {
                 // Update existing customer
