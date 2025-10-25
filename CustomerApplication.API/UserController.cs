@@ -36,8 +36,7 @@ namespace YourProject.API.Controllers
 
             if (string.IsNullOrWhiteSpace(command.Username))
                 return BadRequest("Username is required.");
-            if (command.RoleId == Guid.Empty)
-                return BadRequest("RoleId is required.");
+            
 
             var id = await _userService.CreateAsync(command);
             return Ok(new { id });

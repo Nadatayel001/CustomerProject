@@ -52,7 +52,8 @@ public class UserService : IUserService
         {
             Token = token,
             Username = user.Username,
-            UserId=user.Id
+            UserId=user.Id,
+            RoleName = user.Role?.Name
         };
     }
     public async Task<Guid> CreateAsync(CreateOrUpdateUserCommand command)
@@ -74,7 +75,7 @@ public class UserService : IUserService
             assignedRole = await _roleRepository.GetByNameAsync(defaultRoleName)
                             ?? throw new Exception($"Default role '{defaultRoleName}' not found in database.");
         }
-
+        
         User user;
 
         if (command.Id == null || command.Id == Guid.Empty)

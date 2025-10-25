@@ -9,7 +9,8 @@
     {
         public Guid UserId { get; set; }
         public string Username { get; set; } = default!;
-        public string? Token { get; set; } 
+        public string? Token { get; set; }
+        public string? RoleName { get; set; }
     }
 
 

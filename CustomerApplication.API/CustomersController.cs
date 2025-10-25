@@ -47,6 +47,8 @@ namespace CustomerApplication.API.Controllers
         // 🔹 POST: api/customer
         // Handles both Create & Update
         [HttpPost]
+        [Route("api/customer/createOrUpdate")]
+
         public async Task<IActionResult> CreateOrUpdate([FromBody] Command dto)
         {
             if (!ModelState.IsValid)
